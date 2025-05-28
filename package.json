@@ -1,0 +1,35 @@
+{
+  "name": "null-events-session-browser",
+  "version": "1.0.0",
+  "description": "A responsive web interface to browse null community session data",
+  "main": "process-data.js",
+  "scripts": {
+    "build": "node process-data.js",
+    "update": "node update-events.js",
+    "fetch-sessions": "node -e \"const EventUpdater = require('./update-events.js'); const updater = new EventUpdater(); updater.fetchMissingSessions().then(() => require('./process-data.js')).then(() => console.log('Missing sessions fetched and data rebuilt!')).catch(console.error);\"",
+    "fetch-all": "chmod +x fetch_sessions.sh && ./fetch_sessions.sh",
+    "full-refresh": "npm run fetch-all && npm run build",
+    "api": "node api-server.js",
+    "serve": "npx http-server public -p 8080 -c-1",
+    "dev": "npm run build && npm run serve",
+    "dev-full": "npm run build && npm run api & npm run serve",
+    "start": "npm run dev",
+    "sync": "npm run update && npm run build && echo 'Data synchronized successfully!'"
+  },
+  "keywords": [
+    "null",
+    "security",
+    "sessions",
+    "events",
+    "browser",
+    "responsive"
+  ],
+  "author": "Null Community",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

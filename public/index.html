@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Null Events - Session Browser</title>
+    <meta name="description" content="Browse and search through null community session data">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="header__title">Null Events Session Browser</h1>
+            <p class="header__subtitle">Explore sessions from the null security community</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Update Notification Banner -->
+            <div id="update-banner" class="update-banner" aria-hidden="true">
+                <div class="update-banner__content">
+                    <div class="update-banner__icon">🎉</div>
+                    <div class="update-banner__text">
+                        <strong>New Content Available!</strong>
+                        <span id="update-message">New events and sessions have been added to the database.</span>
+                    </div>
+                    <button type="button" id="dismiss-banner" class="update-banner__close"
+                        aria-label="Dismiss notification">
+                        ✕
+                    </button>
+                </div>
+            </div>
+            <!-- Filters Section -->
+            <section class="filters" aria-label="Filter and search options">
+                <!-- Primary Filters (Always Visible) -->
+                <div class="filters__primary">
+                    <div class="filter-group filter-group--search">
+                        <label for="search" class="filter-label">Search Sessions</label>
+                        <div class="search-with-update">
+                            <input type="text" id="search" class="filter-input"
+                                placeholder="Search by session topic or description..." aria-describedby="search-help">
+                            <button type="button" id="manual-update" class="btn btn--update"
+                                title="Check for new events and sessions" aria-label="Update data">
+                                <span class="update-icon">🔄</span>
+                                <span class="update-text">Update</span>
+                            </button>
+                        </div>
+                        <small id="search-help" class="filter-help">Search in session names and descriptions</small>
+                    </div>
+
+                    <div class="filters__primary-controls">
+                        <div class="filter-group">
+                            <label for="resources-filter" class="filter-label">Resources</label>
+                            <select id="resources-filter" class="filter-select">
+                                <option value="">All Sessions</option>
+                                <option value="presentation">📄 With Presentation</option>
+                                <option value="video">🎥 With Video</option>
+                                <option value="both">📄🎥 With Both</option>
+                                <option value="any">📄🎥 With Any Resource</option>
+                                <option value="none">❌ No Resources</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-actions">
+                            <button type="button" id="toggle-advanced" class="btn btn--filter-toggle"
+                                aria-expanded="false">
+                                <span class="toggle-text">More Filters</span>
+                                <span class="toggle-icon">▼</span>
+                            </button>
+                            <button type="button" id="clear-filters" class="btn btn--secondary">
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Filters (Collapsible) -->
+                <div class="filters__advanced" id="advanced-filters" aria-hidden="true">
+                    <div class="filters__section">
+                        <h3 class="filters__section-title">Content Filters</h3>
+                        <div class="filters__row">
+                            <div class="filter-group">
+                                <label for="location-filter" class="filter-label">Location</label>
+                                <select id="location-filter" class="filter-select">
+                                    <option value="">All Locations</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="year-filter" class="filter-label">Year</label>
+                                <select id="year-filter" class="filter-select">
+                                    <option value="">All Years</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filters__section">
+                        <h3 class="filters__section-title">Date Range</h3>
+                        <div class="filters__row">
+                            <div class="filter-group">
+                                <label for="date-from" class="filter-label">From Date</label>
+                                <input type="date" id="date-from" class="filter-input">
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="date-to" class="filter-label">To Date</label>
+                                <input type="date" id="date-to" class="filter-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filters__section">
+                        <h3 class="filters__section-title">Actions</h3>
+                        <div class="filters__actions">
+                            <button type="button" id="export-csv" class="btn btn--primary">
+                                📊 Export CSV
+                            </button>
+                            <button type="button" id="reset-advanced" class="btn btn--secondary">
+                                Reset Advanced
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Summary -->
+            <section class="results-summary" aria-live="polite">
+                <div class="summary-stats">
+                    <span id="results-count" class="stat">Loading...</span>
+                    <span id="total-count" class="stat"></span>
+                </div>
+            </section>
+
+            <!-- Data Table -->
+            <section class="table-section">
+                <div class="table-container">
+                    <table class="sessions-table" id="sessions-table" role="table" aria-label="Sessions data">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="date" aria-sort="none">
+                                    <button class="sort-btn" type="button">
+                                        Date
+                                        <span class="sort-icon" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="sortable" data-sort="sessionTopic" aria-sort="none">
+                                    <button class="sort-btn" type="button">
+                                        Session Topic
+                                        <span class="sort-icon" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="sortable" data-sort="location" aria-sort="none">
+                                    <button class="sort-btn" type="button">
+                                        Location
+                                        <span class="sort-icon" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="resources-column">
+                                    Resources
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-tbody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading" class="loading" aria-hidden="false">
+                    <div class="loading__spinner"></div>
+                    <p>Loading session data...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="empty-state" aria-hidden="true">
+                    <p>No sessions found matching your criteria.</p>
+                    <button type="button" id="reset-filters" class="btn btn--secondary">Reset Filters</button>
+                </div>
+
+                <!-- Error State -->
+                <div id="error-state" class="error-state" aria-hidden="true">
+                    <p>Error loading session data. Please try again later.</p>
+                    <button type="button" id="retry-load" class="btn btn--primary">Retry</button>
+                </div>
+            </section>
+
+            <!-- Pagination -->
+            <section class="pagination" id="pagination" aria-label="Pagination navigation">
+                <div class="pagination__info">
+                    <span id="pagination-info">Showing 1-50 of 1000 sessions</span>
+                </div>
+                <div class="pagination__controls">
+                    <button type="button" id="prev-page" class="btn btn--pagination" disabled>
+                        Previous
+                    </button>
+                    <div class="pagination__pages" id="pagination-pages">
+                        <!-- Page numbers will be generated by JavaScript -->
+                    </div>
+                    <button type="button" id="next-page" class="btn btn--pagination">
+                        Next
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Null Security Community. Session data browser.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
