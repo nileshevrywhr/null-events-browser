@@ -1,4 +1,5 @@
 # Null Events Session Browser
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1dc58584-49eb-4fd9-ab22-000711a61402/deploy-status)](https://app.netlify.com/projects/monumental-kitsune-afa20d/deploys)
 
 A responsive web interface to browse and search through null security community session data. This application provides an intuitive way to explore sessions from various null community events across different locations and time periods.
 
