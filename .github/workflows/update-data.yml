@@ -1,0 +1,20 @@
+# .github/workflows/update-data.yml
+name: Update Data
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm run fetch-all
+      - run: npm run build
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "auto-update data" || exit 0
+          git push
