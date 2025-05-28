@@ -1,0 +1,62 @@
+[build]
+  # Build command to process data and prepare for deployment
+  command = "npm run build"
+  
+  # Directory to publish (contains the web application)
+  publish = "public"
+  
+  # Node.js version for build environment
+  [build.environment]
+    NODE_VERSION = "18"
+
+# Redirect rules for SPA behavior
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://null.community:443"
+
+# Cache static assets
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache data files for shorter period
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# Functions configuration (for future API endpoints)
+[functions]
+  directory = "netlify/functions"
+
+# Build plugins
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  
+  [plugins.inputs.thresholds]
+    performance = 0.9
+    accessibility = 0.9
+    best-practices = 0.9
+    seo = 0.9
+
+# Environment variables (set these in Netlify dashboard)
+# NETLIFY_SITE_URL - Your site URL
+# API_BASE_URL - null.community API base URL

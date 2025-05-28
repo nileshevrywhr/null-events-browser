@@ -1,0 +1,8 @@
+# Netlify redirects file
+# This ensures the SPA works correctly with client-side routing
+
+# API proxy (if needed in future)
+/api/* https://null.community:443/api-v2/:splat 200
+
+# SPA fallback - serve index.html for all routes
+/* /index.html 200
