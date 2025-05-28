@@ -119,6 +119,7 @@ class SessionBrowser {
       this.applySorting();
       this.updateDisplay();
       this.checkForUpdates();
+      this.loadDeploymentInfo();
       this.hideLoading();
     } catch (error) {
       console.error("Error loading session data:", error);
@@ -825,6 +826,57 @@ class SessionBrowser {
         }
       }, 300);
     }, 4000);
+  }
+
+  async loadDeploymentInfo() {
+    try {
+      const response = await fetch("data/deployment-info.json");
+      if (response.ok) {
+        const deployInfo = await response.json();
+        console.log("Deployment Info:", deployInfo);
+
+        // Add deployment info to page if in development
+        if (
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1"
+        ) {
+          this.showDeploymentInfo(deployInfo);
+        }
+      }
+    } catch (error) {
+      // Silently fail - deployment info is optional
+      console.debug("No deployment info available");
+    }
+  }
+
+  showDeploymentInfo(info) {
+    const banner = document.createElement("div");
+    banner.style.cssText = `
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: #333;
+      color: white;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      z-index: 1000;
+      max-width: 300px;
+    `;
+    banner.innerHTML = `
+      <strong>Deployment Info</strong><br>
+      Built: ${new Date(info.buildTime).toLocaleString()}<br>
+      Real Data: ${info.hasRealData ? "Yes" : "No"}<br>
+      Events: ${info.dataFiles.events} | Sessions: ${info.dataFiles.sessions}
+    `;
+    document.body.appendChild(banner);
+
+    // Auto-hide after 10 seconds
+    setTimeout(() => {
+      if (banner.parentNode) {
+        banner.parentNode.removeChild(banner);
+      }
+    }, 10000);
   }
 }
 

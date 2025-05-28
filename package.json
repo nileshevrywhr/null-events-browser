@@ -4,17 +4,20 @@
   "description": "A responsive web interface to browse null community session data",
   "main": "process-data.js",
   "scripts": {
-    "build": "node process-data.js",
+    "build": "node build-for-deployment.js",
+    "build:data": "node process-data.js",
     "update": "node update-events.js",
     "fetch-sessions": "node -e \"const EventUpdater = require('./update-events.js'); const updater = new EventUpdater(); updater.fetchMissingSessions().then(() => require('./process-data.js')).then(() => console.log('Missing sessions fetched and data rebuilt!')).catch(console.error);\"",
     "fetch-all": "chmod +x fetch_sessions.sh && ./fetch_sessions.sh",
-    "full-refresh": "npm run fetch-all && npm run build",
+    "full-refresh": "npm run fetch-all && npm run build:data",
     "api": "node api-server.js",
     "serve": "npx http-server public -p 8080 -c-1",
-    "dev": "npm run build && npm run serve",
-    "dev-full": "npm run build && npm run api & npm run serve",
+    "dev": "npm run build:data && npm run serve",
+    "dev-full": "npm run build:data && npm run api & npm run serve",
     "start": "npm run dev",
-    "sync": "npm run update && npm run build && echo 'Data synchronized successfully!'"
+    "sync": "npm run update && npm run build:data && echo 'Data synchronized successfully!'",
+    "deploy:preview": "npm run build && echo 'Ready for deployment preview'",
+    "deploy:prod": "npm run build && echo 'Ready for production deployment'"
   },
   "keywords": [
     "null",
