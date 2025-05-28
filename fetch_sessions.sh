@@ -70,11 +70,11 @@ file_counter=0
 event_counter=0
 
 # Process events in batches
-while [ $event_counter -lt $total_events ]; do
-    start_index=$event_counter
+while [ $event_counter -lt "$total_events" ]; do
+    start_index="$event_counter"
     end_index=$((event_counter + events_per_file - 1))
 
-    if [ $end_index -ge $total_events ]; then
+    if [ "$end_index" -ge "$total_events" ]; then
         end_index=$((total_events - 1))
     fi
 
@@ -110,7 +110,7 @@ while IFS= read -r event_id; do
     counter=$((counter + 1))
 
     # Progress indicator
-    if [ $((counter % 50)) -eq 0 ] || [ $counter -eq $total_ids ]; then
+    if [ $((counter % 50)) -eq 0 ] || [ "$counter" -eq "$total_ids" ]; then
         print_status "Progress: $counter/$total_ids events processed"
     fi
 
