@@ -41,13 +41,15 @@ mkdir -p temp
 
 # Step 1: Fetch all events from the API
 print_status "Fetching all events from null.community API..."
-curl -X GET "https://null.community:443/api-v2/events" \
+if curl -X GET "https://null.community:443/api-v2/events" \
      -H "accept: application/json" \
      -o "temp/all_events.json" \
-     -s --fail
-
-if [ ! -f "temp/all_events.json" ]; then
-    print_error "Failed to fetch events from API"
+     -s --fail --retry 3 --retry-delay 2; then
+    # Success case
+    print_status "Successfully downloaded events data"
+else
+    print_error "Failed to fetch events from API (HTTP error ${?})"
+    print_warning "API might be temporarily unavailable or endpoint has changed"
     exit 1
 fi
 
@@ -117,11 +119,11 @@ while IFS= read -r event_id; do
     # Fetch event sessions using the correct endpoint
     session_file="sessions/event_${event_id}_sessions.json"
 
-    # Try the event_sessions endpoint first
+    # Try the event_sessions endpoint with retries
     if curl -X GET "https://null.community:443/api-v2/events/$event_id/event_sessions" \
             -H "accept: application/json" \
             -o "$session_file" \
-            -s --fail 2>/dev/null; then
+            -s --fail --retry 2 --retry-delay 1 2>/dev/null; then
 
         # Check if the response is valid JSON
         if jq empty "$session_file" 2>/dev/null; then
