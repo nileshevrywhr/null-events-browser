@@ -39,6 +39,16 @@ mkdir -p sessions
 mkdir -p events
 mkdir -p temp
 
+
+# Step 0: verify API endpoint is correct and actively available
+API_URL="https://api.null.community/events"
+RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$API_URL")
+
+if [ "$RESPONSE" -ne 200 ]; then
+  echo "[ERROR] API returned HTTP status code $RESPONSE"
+  exit 1
+fi
+
 # Step 1: Fetch all events from the API
 print_status "Fetching all events from null.community API..."
 if curl -X GET "https://null.community:443/api-v2/events" \
