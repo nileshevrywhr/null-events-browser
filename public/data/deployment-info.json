@@ -1,10 +1,10 @@
 {
-  "buildTime": "2025-05-28T20:30:54.780Z",
+  "buildTime": "2025-05-29T13:34:09.538Z",
   "version": "1.0.0",
   "environment": "production",
-  "hasRealData": true,
+  "hasRealData": false,
   "dataFiles": {
-    "events": 11,
-    "sessions": 1053
+    "events": 0,
+    "sessions": 0
   }
 }
